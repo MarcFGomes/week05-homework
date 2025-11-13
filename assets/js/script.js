@@ -48,10 +48,10 @@ function createTaskCard(task) {
     // Your code here
     //const dueDateTask = dayjs(task.dueDate, 'yy-mm-dd');
     let dueDateTask = task.dueDate;
-    console.log(`The due date is: ${dueDateTask}`);
+    //console.log(`The due date is: ${dueDateTask}`);
 
     dueDateTask = dayjs(dueDateTask);
-    console.log(`The due date is in dayjs: ${dueDateTask}`);
+    //console.log(`The due date is in dayjs: ${dueDateTask}`);
 
     const today = dayjs();
 
@@ -61,15 +61,16 @@ function createTaskCard(task) {
     const diffDays = dueDateTask.diff(today, 'days');
     console.log(`The difference is: ${diffDays}`);
 
+    //Select a class according to the time and status
     let classForCard = "";
     if (task.status==='done') {classForCard = "card text-white bg-success mb-3"}
     else if (task.status==='to-do' || task.status==='in progress') {
-        if (diffDays <=0 && diffDays >=-5 ) {classForCard = "card text-white bg-danger mb-3"}
-        else if (diffDays <= -5 ) {classForCard = "card text-dark bg-light mb-3"}
-        else if (diffDays > 0) {classForCard = "card text-white bg-warning mb-3"}
+        if (diffDays <0 ) {classForCard = "card text-white bg-danger mb-3"}
+        else if (diffDays >5) {classForCard = "card text-dark bg-light mb-3"}
+        else if (diffDays >= 0 && diffDays <=5) {classForCard = "card text-white bg-warning mb-3"}
     }
 
-    console.log(classForCard);
+    //console.log(classForCard);
     
     const $card = $(`
     <div  class="${classForCard}" data-task-id="${task.id}">
@@ -101,16 +102,20 @@ function renderTaskList() {
     $("#done-cards").empty();
 
     tasks.forEach((task, index)=> {
-    console.log(`User at index ${index}:`);
-    console.log(`ID: ${task.id}, Name: ${task.title}, Due Date: ${task.dueDate}, Description: ${task.description}, Status: ${task.status}`);
+    //console.log(`User at index ${index}:`);
+    //console.log(`ID: ${task.id}, Name: ${task.title}, Due Date: ${task.dueDate}, Description: ${task.description}, Status: ${task.status}`);
 
     $card = createTaskCard(task);
 
+    
     if(task.status === "to-do") {$("#todo-cards").append($card)}
     else if (task.status === "in progress") {$("#in-progress-cards").append($card)}
     else if (task.status === "done") {$("#done-cards").append($card)}
 
     });
+
+    //Call delete function with the class button
+    $(".delete-task").on("click", handleDeleteTask);
 
     
     
@@ -151,8 +156,11 @@ function handleAddTask(event) {
     saveState();
     renderTaskList();
 
+    //Hide the modal window
     $("#taskModal").modal("hide");
-    $('#taskForm')[0].reset(); 
+
+    //reset the form
+    $('#taskForm')[0].reset();
     return;
 
 }
@@ -164,12 +172,10 @@ function handleAddTask(event) {
 function handleDeleteTask(event) {
     // Your code here
     event.preventDefault();
-    let indexToRemove = $(this).data('task-id');
-    console.log (indexToRemove);
-    //task.splice(indexToRemove, 1);
-
-
-
+    console.log(event);
+    const taskId = $(event.target).data("task-id");
+    console.log (`This is the index to remove: ${taskId}`);
+    tasks = tasks.filter(task => task.id !== taskId);
 
     saveState();
     renderTaskList();
@@ -196,7 +202,7 @@ $(function () {
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
         changeYear: true,
-        minDate: 0,
+        
     });
 
     // Render tasks on load (will do nothing until you implement renderTaskList)
