@@ -26,6 +26,10 @@ function saveState() {
 // - Increment nextId and persist using saveState()
 function generateTaskId() {
     // Your code here
+    let id = nextId++;
+    saveState();
+    console.log (id);
+    return id;
 }
 
 // TODO: createTaskCard(task)
@@ -42,6 +46,8 @@ function generateTaskId() {
 //     - Add an overdue style if past due
 function createTaskCard(task) {
     // Your code here
+    const dueDate = task.dueDate;
+    const today = dayjs();
 }
 
 // TODO: renderTaskList()
@@ -51,6 +57,23 @@ function createTaskCard(task) {
 // - After rendering, make task cards draggable with jQuery UI
 function renderTaskList() {
     // Your code here
+    $("#todo-cards").empty();
+    $("#in-progress-cards").empty();
+    $("#done-cards").empty();
+
+    tasks.forEach(function(task, index) {
+    console.log(`User at index ${index}:`);
+    console.log(`ID: ${task.id}, Name: ${task.title}, Due Date: ${task.dueDate}, Description: ${task.description}, Status: ${task.status}`);
+
+    $card = createTaskCard(task);
+
+    if(task.status === "to-do") {$("#todo-cards").append($card)}
+    else if (task.status === "in progress") {$("#in-progress-cards").append($card)}
+    else if (task.status === "done") {$("#done-cards").append($card)}
+
+    });
+
+
 }
 
 // TODO: handleAddTask(event)
@@ -65,6 +88,33 @@ function renderTaskList() {
 // - Reset the form and close the modal
 function handleAddTask(event) {
     // Your code here
+    event.preventDefault();
+    const title = $("#taskTitle").val().trim();
+    const description = $("#taskDescription").val().trim();
+    const dueDate = $("#taskDueDate").val();
+
+    if (!title || !description || !dueDate) {
+        alert("Please fill out all fields before saving.");
+    return;
+    }
+
+
+    const newTask = {
+        id: generateTaskId(),
+        title: title,
+        description: description,
+        dueDate: dueDate,
+        status: "to-do"
+    }
+
+    tasks.push(newTask);
+    saveState();
+    renderTaskList();
+
+    $("#taskModal").modal("hide");
+    $('#taskForm')[0].reset(); 
+    return;
+
 }
 
 // TODO: handleDeleteTask(event)
@@ -73,6 +123,13 @@ function handleAddTask(event) {
 // - Save and re-render
 function handleDeleteTask(event) {
     // Your code here
+    event.preventDefault();
+
+
+
+
+    saveState();
+    renderTaskList();
 }
 
 // TODO: handleDrop(event, ui)
