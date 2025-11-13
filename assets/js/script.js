@@ -61,16 +61,30 @@ function createTaskCard(task) {
     const diffDays = dueDateTask.diff(today, 'days');
     console.log(`The difference is: ${diffDays}`);
 
-    //Select a class according to the time and status
+    //Select a class according to the time and status for the card and the delete button
     let classForCard = "";
-    if (task.status==='done') {classForCard = "card text-white bg-success mb-3"}
+    let classForButton = "";
+    if (task.status==='done') {
+        classForCard = "card text-white bg-success mb-3"//Green color
+        classForButton = "btn-danger";
+    }
     else if (task.status==='to-do' || task.status==='in progress') {
-        if (diffDays <0 ) {classForCard = "card text-white bg-danger mb-3"}
-        else if (diffDays >5) {classForCard = "card text-dark bg-light mb-3"}
-        else if (diffDays >= 0 && diffDays <=5) {classForCard = "card text-white bg-warning mb-3"}
+        if (diffDays <0 ) 
+            {
+            classForCard = "card text-white bg-danger mb-3"//Red Color
+            classForButton = "btn-outline-light";
+        }
+        else if (diffDays >5) {
+            classForCard = "card text-dark bg-light mb-3"//Light color
+            classForButton = "btn-danger";
+        }
+        else if (diffDays >= 0 && diffDays <=5) {
+            classForCard = "card text-white bg-warning mb-3"//Orange color
+            classForButton = "btn-danger";
+        }
     }
 
-    //console.log(classForCard);
+    console.log(classForButton);
     
     const $card = $(`
     <div  class="${classForCard}" data-task-id="${task.id}">
@@ -78,7 +92,7 @@ function createTaskCard(task) {
       <div class="card-body text-center"> 
         <p class="card-text">${task.description}</p>
         <p>${task.dueDate}</p>
-        <button class="btn btn-sm btn-outline-danger delete-task" data-task-id="${task.id}">
+        <button class="btn btn-sm ${classForButton} delete-task" data-task-id="${task.id}">
           Delete
         </button>
       </div>
