@@ -46,8 +46,47 @@ function generateTaskId() {
 //     - Add an overdue style if past due
 function createTaskCard(task) {
     // Your code here
-    const dueDate = task.dueDate;
+    //const dueDateTask = dayjs(task.dueDate, 'yy-mm-dd');
+    let dueDateTask = task.dueDate;
+    console.log(`The due date is: ${dueDateTask}`);
+
+    dueDateTask = dayjs(dueDateTask);
+    console.log(`The due date is in dayjs: ${dueDateTask}`);
+
     const today = dayjs();
+
+    console.log(`The due date is: ${dueDateTask}`);
+    console.log(`The day is: ${today}`);
+
+    const diffDays = dueDateTask.diff(today, 'days');
+    console.log(`The difference is: ${diffDays}`);
+
+    let classForCard = "";
+    if (task.status==='done') {classForCard = "card text-white bg-success mb-3"}
+    else if (task.status==='to-do' || task.status==='in progress') {
+        if (diffDays <=0 && diffDays >=-5 ) {classForCard = "card text-white bg-danger mb-3"}
+        else if (diffDays <= -5 ) {classForCard = "card text-dark bg-light mb-3"}
+        else if (diffDays > 0) {classForCard = "card text-white bg-warning mb-3"}
+    }
+
+    console.log(classForCard);
+    
+    const $card = $(`
+    <div  class="${classForCard}" data-task-id="${task.id}">
+    <h5 class="card-header text-center">${task.title}</h5>
+      <div class="card-body text-center"> 
+        <p class="card-text">${task.description}</p>
+        <p>${task.dueDate}</p>
+        <button class="btn btn-sm btn-outline-danger delete-task" data-task-id="${task.id}">
+          Delete
+        </button>
+      </div>
+    </div>
+  `);
+
+  console.log("Return card");
+  return $card;
+
 }
 
 // TODO: renderTaskList()
@@ -61,7 +100,7 @@ function renderTaskList() {
     $("#in-progress-cards").empty();
     $("#done-cards").empty();
 
-    tasks.forEach(function(task, index) {
+    tasks.forEach((task, index)=> {
     console.log(`User at index ${index}:`);
     console.log(`ID: ${task.id}, Name: ${task.title}, Due Date: ${task.dueDate}, Description: ${task.description}, Status: ${task.status}`);
 
@@ -73,7 +112,8 @@ function renderTaskList() {
 
     });
 
-
+    
+    
 }
 
 // TODO: handleAddTask(event)
@@ -124,6 +164,9 @@ function handleAddTask(event) {
 function handleDeleteTask(event) {
     // Your code here
     event.preventDefault();
+    let indexToRemove = $(this).data('task-id');
+    console.log (indexToRemove);
+    //task.splice(indexToRemove, 1);
 
 
 
