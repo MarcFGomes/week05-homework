@@ -55,11 +55,11 @@ function createTaskCard(task) {
 
     const today = dayjs();
 
-    console.log(`The due date is: ${dueDateTask}`);
-    console.log(`The day is: ${today}`);
+    //console.log(`The due date is: ${dueDateTask}`);
+    //console.log(`The day is: ${today}`);
 
     const diffDays = dueDateTask.diff(today, 'days');
-    console.log(`The difference is: ${diffDays}`);
+    //console.log(`The difference is: ${diffDays}`);
 
     //Select a class according to the time and status for the card and the delete button
     let classForCard = "";
@@ -84,10 +84,10 @@ function createTaskCard(task) {
         }
     }
 
-    console.log(classForButton);
+    //console.log(classForButton);
     
     const $card = $(`
-    <div  class="${classForCard}" data-task-id="${task.id}">
+    <div  class="task-card ${classForCard}" data-task-id="${task.id}">
     <h5 class="card-header text-center">${task.title}</h5>
       <div class="card-body text-center"> 
         <p class="card-text">${task.description}</p>
@@ -99,7 +99,7 @@ function createTaskCard(task) {
     </div>
   `);
 
-  console.log("Return card");
+  //console.log("Return card");
   return $card;
 
 }
@@ -127,6 +127,31 @@ function renderTaskList() {
     else if (task.status === "done") {$("#done-cards").append($card)}
 
     });
+
+    //Drag the card
+    $(".task-card").draggable({
+        containment: ".container .py-4",
+        stack: ".task-card"
+    });
+
+    $("#todo-cards").droppable({
+      drop: function( event, ui ) {
+        handleDrop(event, ui);
+    }})   
+
+    $("#in-progress-cards").droppable({
+      drop: function( event, ui ) {
+        handleDrop(event, ui);
+    }})    
+    
+    $("#done-cards").droppable({
+      drop: function( event, ui ) {
+        handleDrop(event, ui);
+    }})      
+    
+    
+   
+
 
     //Call delete function with the class button
     $(".delete-task").on("click", handleDeleteTask);
@@ -201,7 +226,26 @@ function handleDeleteTask(event) {
 // - Update the task's status in the tasks array
 // - Save and re-render
 function handleDrop(event, ui) {
-    // Your code here
+    const droppedCard = ui.draggable;
+    const droppedId = droppedCard.data("task-id");
+    let  laneId = $(event.target).attr("id"); // ID of the element where it was dropped
+    console.log(laneId);
+
+    let newStatus;
+    if (laneId === "todo-cards") newStatus = "to-do";
+    else if (laneId === "in-progress-cards") newStatus = "in progress";
+    else if (laneId === "done-cards") newStatus = "done";
+
+    console.log(newStatus);
+
+    const taskToChange = tasks.find(task => task.id === droppedId);
+    console.log(taskToChange); 
+
+    taskToChange.status = newStatus;
+    console.log(taskToChange); 
+
+    saveState();
+    renderTaskList();
 }
 
 // ===== Document Ready =====
