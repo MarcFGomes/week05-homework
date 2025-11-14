@@ -128,6 +128,6 @@ body {
 }
 
 /* allow dragged items to escape clipping */ 
-.lane, .lane .card-body {
+.lane {
   overflow: visible; 
 } 
