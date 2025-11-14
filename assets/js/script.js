@@ -131,7 +131,8 @@ function renderTaskList() {
     //Drag the card
     $(".task-card").draggable({
         containment: ".container .py-4",
-        stack: ".task-card"
+        stack: ".task-card",
+        zIndex: 9999
     });
 
     $("#todo-cards").droppable({
@@ -149,8 +150,6 @@ function renderTaskList() {
         handleDrop(event, ui);
     }})      
     
-    
-   
 
 
     //Call delete function with the class button

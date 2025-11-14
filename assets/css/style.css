@@ -126,3 +126,8 @@ body {
 .lane-body.ui-droppable-hover {
   background-color: rgba(25, 135, 84, 0.05);
 }
+
+/* allow dragged items to escape clipping */ 
+.lane, .lane .card-body {
+  overflow: visible; 
+} 
