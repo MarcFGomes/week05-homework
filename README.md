@@ -16,3 +16,5 @@ It allows users to create, drag, and organize tasks by status — all stored in 
 
 
 [Access the Task Board](https://marcfgomes.github.io/week05-homework/)
+
+![Alt Text](./assets/css/05-third-party-apis-homework-demo.gif)
